@@ -4,10 +4,17 @@ using UnityEngine.SceneManagement;
 public class CollisionHandler : MonoBehaviour
 {
     [SerializeField] float levelLoadDelay = 1f;
+    [SerializeField] AudioClip deathExplosion;
+    [SerializeField] AudioClip success;
+    [SerializeField] ParticleSystem deathExplosionParticles;
+    [SerializeField] ParticleSystem successParticles;
     private Movement _movement;
+    private AudioSource _audioSource;
+    private bool isTransitioning = true;
     void Start()
     {
         _movement = GetComponent<Movement>();
+        _audioSource = GetComponent<AudioSource>();
     }
 
     void OnCollisionEnter(Collision collision)
@@ -18,18 +25,25 @@ public class CollisionHandler : MonoBehaviour
                 Debug.Log("It's a friendly object");
                 break;
             case "Finish":
-                StartSequence(nameof(LoadNextLevel));
+                StartSequence(nameof(LoadNextLevel), success, successParticles);
                 break;
             default:
-                StartSequence(nameof(ReloadLevel));
+                StartSequence(nameof(ReloadLevel), deathExplosion, deathExplosionParticles);
                 break;
         }
     }
 
-    private void StartSequence(string functionName)
+    private void StartSequence(string functionName, AudioClip audioClip, ParticleSystem particleSystem)
     {
-        _movement.enabled = false;
-        Invoke(functionName, levelLoadDelay);
+        if (isTransitioning)
+        {
+            isTransitioning = false;
+            _movement.enabled = false;
+            _audioSource.Stop();
+            _audioSource.PlayOneShot(audioClip);
+            particleSystem.Play();
+            Invoke(functionName, levelLoadDelay);
+        }
     }
 
     private void LoadNextLevel()
