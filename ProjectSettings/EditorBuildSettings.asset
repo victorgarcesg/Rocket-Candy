@@ -11,4 +11,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Under.unity
     guid: 32a6db4655aca49499fd0641a6cc3e98
+  - enabled: 1
+    path: Assets/Scenes/Over.unity
+    guid: 0482d46d8410b4603a030162fee0fc27
+  - enabled: 1
+    path: Assets/Scenes/Through gap.unity
+    guid: 3827fef1ff21a4b25b00fd2e4acd52d6
   m_configObjects: {}
